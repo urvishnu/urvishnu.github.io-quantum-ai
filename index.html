@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Computing Workshop | MIT Bengaluru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --quantum-cyan: #00FFF5;
+            --quantum-purple: #7B2CBF;
+            --quantum-blue: #0A1F44;
+            --quantum-dark: #0D1117;
+            --quantum-accent: #FF006E;
+            --quantum-gold: #FFB627;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--quantum-dark);
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Background */
+        .quantum-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0D1117 0%, #1a1f35 50%, #0D1117 100%);
+        }
+
+        .quantum-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(123, 44, 191, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 245, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Grid Pattern */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(0, 255, 245, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 245, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 5%;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 245, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .logo p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+            letter-spacing: 1px;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--quantum-cyan);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: var(--quantum-cyan);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 5% 6rem;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 1s ease-out 0.3s backwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(0, 255, 245, 0.1);
+            border: 1px solid var(--quantum-cyan);
+            border-radius: 50px;
+            color: var(--quantum-cyan);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+            animation: fadeIn 1s ease-out 0.5s backwards;
+        }
+
+        .hero h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            animation: fadeIn 1s ease-out 0.7s backwards;
+        }
+
+        .hero h2 .highlight {
+            background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple), var(--quantum-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+            animation: fadeIn 1s ease-out 0.9s backwards;
+        }
+
+        .event-details {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease-out 1.1s backwards;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .detail-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(0, 255, 245, 0.2), rgba(123, 44, 191, 0.2));
+            border: 1px solid var(--quantum-cyan);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .detail-text h4 {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.2rem;
+        }
+
+        .detail-text p {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--quantum-cyan);
+            margin: 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--quantum-purple), var(--quantum-accent));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            letter-spacing: 1px;
+            animation: fadeIn 1s ease-out 1.3s backwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.4);
+            border-color: var(--quantum-accent);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--quantum-cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Schedule */
+        .schedule-container {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .day-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 245, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--quantum-cyan), var(--quantum-purple));
+        }
+
+        .day-card:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--quantum-cyan);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .day-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .day-date {
+            font-family: 'Space Mono', monospace;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+
+        .sessions {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .session {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--quantum-purple);
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .session:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: var(--quantum-cyan);
+            transform: translateX(5px);
+        }
+
+        .session-time {
+            font-family: 'Space Mono', monospace;
+            color: var(--quantum-cyan);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .session-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .session-speaker {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .session-speaker strong {
+            color: var(--quantum-gold);
+        }
+
+        /* Resource Persons */
+        .speakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .speaker-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 245, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s;
+        }
+
+        .speaker-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--quantum-cyan);
+            box-shadow: 0 20px 40px rgba(0, 255, 245, 0.2);
+        }
+
+        .speaker-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .speaker-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .speaker-title {
+            color: var(--quantum-cyan);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .speaker-org {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+
+        /* Organizing Team */
+        .team-section {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .team-category h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--quantum-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 255, 245, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .team-member:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--quantum-purple);
+        }
+
+        .team-member h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+
+        .team-member p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 245, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .contact-grid {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--quantum-purple), var(--quantum-accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .contact-info h4 {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-info p {
+            font-family: 'Space Mono', monospace;
+            color: var(--quantum-cyan);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .contact-info a {
+            color: var(--quantum-cyan);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-info a:hover {
+            color: var(--quantum-accent);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(13, 17, 23, 0.9);
+            border-top: 1px solid rgba(0, 255, 245, 0.2);
+            padding: 3rem 5%;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-text strong {
+            color: var(--quantum-cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+            }
+
+            nav a {
+                font-size: 0.8rem;
+            }
+
+            .hero {
+                padding: 5rem 5% 4rem;
+            }
+
+            section {
+                padding: 3rem 5%;
+            }
+
+            .event-details {
+                gap: 1.5rem;
+            }
+
+            .detail-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <div class="quantum-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <h1>QUANTUM FDP</h1>
+                <p>MIT Bengaluru</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#schedule">Schedule</a></li>
+                    <li><a href="#speakers">Speakers</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-badge">5-DAY OFFLINE FDP</div>
+            <h2>
+                <span class="highlight">Quantum Computing</span><br>
+                for Machine Learning, Security,<br>
+                and Other Applications
+            </h2>
+            <p>Next-Generation Computing Paradigms: Explore the revolutionary world of quantum computing with industry experts and academic leaders</p>
+            
+            <div class="event-details">
+                <div class="detail-item">
+                    <div class="detail-icon">📅</div>
+                    <div class="detail-text">
+                        <h4>Duration</h4>
+                        <p>23-27 Feb 2026</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">📍</div>
+                    <div class="detail-text">
+                        <h4>Location</h4>
+                        <p>MIT Bengaluru</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">🎓</div>
+                    <div class="detail-text">
+                        <h4>Format</h4>
+                        <p>Offline Workshop</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#contact" class="cta-button">Register Now</a>
+        </section>
+
+        <section id="about">
+            <div class="section-header fade-in">
+                <div class="section-label">About the Workshop</div>
+                <h2 class="section-title">Next-Generation Computing Paradigms</h2>
+                <p class="section-subtitle">
+                    A comprehensive five-day faculty development program organized by the School of Computer Engineering, 
+                    Manipal Institute of Technology Bengaluru, covering quantum principles, cryptography, machine learning, 
+                    and future quantum technologies.
+                </p>
+            </div>
+        </section>
+
+        <section id="schedule">
+            <div class="section-header">
+                <div class="section-label">Workshop Schedule</div>
+                <h2 class="section-title">Five Days of Quantum Excellence</h2>
+            </div>
+
+            <div class="schedule-container">
+                <!-- Day 1 -->
+                <div class="day-card fade-in stagger-1">
+                    <div class="day-header">
+                        <div class="day-number">Day 1</div>
+                        <div class="day-date">February 23, 2026</div>
+                    </div>
+                    <div class="sessions">
+                        <div class="session">
+                            <div class="session-time">11:15 AM - 12:30 PM</div>
+                            <div class="session-title">Introduction to Quantum Principles & States, Mathematical Representation</div>
+                            <div class="session-speaker"><strong>Dr. Srinivas Talabattula</strong>, IISc Bengaluru</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">1:30 PM - 3:00 PM</div>
+                            <div class="session-title">Accelerating R&D with Quantum Computing - Sector by Sector Analysis</div>
+                            <div class="session-speaker"><strong>Dr. Anjani Priyadarsini</strong>, Quantum Industry Specialist</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 2 -->
+                <div class="day-card fade-in stagger-2">
+                    <div class="day-header">
+                        <div class="day-number">Day 2</div>
+                        <div class="day-date">February 24, 2026</div>
+                    </div>
+                    <div class="sessions">
+                        <div class="session">
+                            <div class="session-time">9:30 AM - 11:00 AM</div>
+                            <div class="session-title">Quantum Gates</div>
+                            <div class="session-speaker"><strong>Mr. Veeresh Kuruba</strong>, IISc Bengaluru</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">11:15 AM - 12:30 PM</div>
+                            <div class="session-title">Quantum Measurement Operations: Trade-off between Modalities</div>
+                            <div class="session-speaker"><strong>Dr. Arup Bhowmick</strong>, MIT Bengaluru</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">1:30 PM - 3:00 PM</div>
+                            <div class="session-title">Quantum Circuit Design in Qiskit</div>
+                            <div class="session-speaker"><strong>Mr. Raja Singh Yadav</strong>, Knowledge Associate, CDAC Bengaluru</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">3:15 PM - 4:30 PM</div>
+                            <div class="session-title">Shor's and Grover's Algorithms</div>
+                            <div class="session-speaker"><strong>Mr. Raja Singh Yadav</strong>, Knowledge Associate, CDAC Bengaluru</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 3 -->
+                <div class="day-card fade-in stagger-3">
+                    <div class="day-header">
+                        <div class="day-number">Day 3</div>
+                        <div class="day-date">February 25, 2026</div>
+                    </div>
+                    <div class="sessions">
+                        <div class="session">
+                            <div class="session-time">9:30 AM - 11:00 AM</div>
+                            <div class="session-title">Decoherence in Quantum Computing & Communication</div>
+                            <div class="session-speaker"><strong>Mr. Ajmal Ibn Md. Althaf</strong>, Founder & CEO, QuantumX</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">11:15 AM - 12:30 PM</div>
+                            <div class="session-title">Post Quantum Cryptography and its Applications</div>
+                            <div class="session-speaker"><strong>Mr. Ajmal Ibn Md. Althaf</strong>, Founder & CEO, QuantumX</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">1:30 PM - 3:00 PM</div>
+                            <div class="session-title">Quantum Cryptography and QKD Basics</div>
+                            <div class="session-speaker"><strong>Dr. Y. V. Srinivasa Murthy</strong>, MIT Bengaluru</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">3:15 PM - 4:30 PM</div>
+                            <div class="session-title">Quantum Cryptography and QKD in Detail</div>
+                            <div class="session-speaker"><strong>Dr. Varun Raghunathan</strong>, IISc Bengaluru</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 4 -->
+                <div class="day-card fade-in stagger-4">
+                    <div class="day-header">
+                        <div class="day-number">Day 4</div>
+                        <div class="day-date">February 26, 2026</div>
+                    </div>
+                    <div class="sessions">
+                        <div class="session">
+                            <div class="session-time">9:30 AM - 11:00 AM</div>
+                            <div class="session-title">Introduction to Quantum Machine Learning and QML Fundamentals</div>
+                            <div class="session-speaker"><strong>Dr. Kumari Jyoti Tiwari</strong>, IISc Bengaluru</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">11:15 AM - 12:30 PM</div>
+                            <div class="session-title">QML Framework Basics</div>
+                            <div class="session-speaker"><strong>Mr. Saurabh Sharma</strong>, MIT Bengaluru</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">1:30 PM - 3:00 PM</div>
+                            <div class="session-title">QML and Quantum Data Encoding Techniques</div>
+                            <div class="session-speaker"><strong>Mr. Karthiganesh Durai</strong>, Founder & CEO, KwantumG Research Labs</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">3:15 PM - 4:30 PM</div>
+                            <div class="session-title">Implementing Quantum Circuits for ML</div>
+                            <div class="session-speaker"><strong>Mr. Karthiganesh Durai</strong>, Founder & CEO, KwantumG Research Labs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 5 -->
+                <div class="day-card fade-in stagger-5">
+                    <div class="day-header">
+                        <div class="day-number">Day 5</div>
+                        <div class="day-date">February 27, 2026</div>
+                    </div>
+                    <div class="sessions">
+                        <div class="session">
+                            <div class="session-time">9:30 AM - 11:00 AM</div>
+                            <div class="session-title">Variational Circuits and Optimization for ML</div>
+                            <div class="session-speaker"><strong>Mr. Sachin Namdeo</strong>, Project Engineer, CDAC Bangalore</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">11:15 AM - 12:30 PM</div>
+                            <div class="session-title">Quantum Classification Models</div>
+                            <div class="session-speaker"><strong>Mr. Sachin Namdeo</strong>, Project Engineer, CDAC Bangalore</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">1:30 PM - 3:00 PM</div>
+                            <div class="session-title">Hybrid Quantum-Classical Models</div>
+                            <div class="session-speaker"><strong>Dr. Divyansh Shrimali</strong>, Project Engineer, CDAC Bangalore</div>
+                        </div>
+                        <div class="session">
+                            <div class="session-time">3:15 PM - 4:30 PM</div>
+                            <div class="session-title">Quantum Technologies for the Next Decade</div>
+                            <div class="session-speaker"><strong>Mr. Henry Sukumar</strong>, Associate Director, CDAC Bangalore</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="speakers">
+            <div class="section-header">
+                <div class="section-label">Expert Faculty</div>
+                <h2 class="section-title">Resource Persons</h2>
+                <p class="section-subtitle">Learn from distinguished experts from IISc, CDAC, and leading quantum technology companies</p>
+            </div>
+
+            <div class="speakers-grid">
+                <div class="speaker-card fade-in stagger-1">
+                    <div class="speaker-avatar">ST</div>
+                    <h3 class="speaker-name">Dr. Srinivas T.</h3>
+                    <p class="speaker-title">Professor</p>
+                    <p class="speaker-org">IISc Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-2">
+                    <div class="speaker-avatar">AP</div>
+                    <h3 class="speaker-name">Dr. Anjani Priya</h3>
+                    <p class="speaker-title">Quantum Industry Specialist</p>
+                    <p class="speaker-org"></p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-3">
+                    <div class="speaker-avatar">VR</div>
+                    <h3 class="speaker-name">Dr. Varun R.</h3>
+                    <p class="speaker-title">Associate Professor</p>
+                    <p class="speaker-org">IISc Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-4">
+                    <div class="speaker-avatar">HS</div>
+                    <h3 class="speaker-name">Mr. Henry S.</h3>
+                    <p class="speaker-title">Scientist-F, Associate Director</p>
+                    <p class="speaker-org">CDAC Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-5">
+                    <div class="speaker-avatar">KD</div>
+                    <h3 class="speaker-name">Dr. Karthiganesh D.</h3>
+                    <p class="speaker-title">Founder & CEO</p>
+                    <p class="speaker-org">KwantumG Research Labs</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-1">
+                    <div class="speaker-avatar">DS</div>
+                    <h3 class="speaker-name">Dr. Divyansh S.</h3>
+                    <p class="speaker-title">Project Engineer</p>
+                    <p class="speaker-org">CDAC Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-2">
+                    <div class="speaker-avatar">AA</div>
+                    <h3 class="speaker-name">Mr. Ajmal Altaf</h3>
+                    <p class="speaker-title">Founder & CEO</p>
+                    <p class="speaker-org">QuantumX</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-3">
+                    <div class="speaker-avatar">KJ</div>
+                    <h3 class="speaker-name">Dr. Kumari Jyoti</h3>
+                    <p class="speaker-title">Researcher</p>
+                    <p class="speaker-org">IISc Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-4">
+                    <div class="speaker-avatar">VK</div>
+                    <h3 class="speaker-name">Mr. Veeresh</h3>
+                    <p class="speaker-title">Knowledge Associate</p>
+                    <p class="speaker-org">CDAC Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-5">
+                    <div class="speaker-avatar">RS</div>
+                    <h3 class="speaker-name">Mr. Raja Singh</h3>
+                    <p class="speaker-title">Knowledge Associate</p>
+                    <p class="speaker-org">CDAC Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-1">
+                    <div class="speaker-avatar">SN</div>
+                    <h3 class="speaker-name">Mr. Sachin</h3>
+                    <p class="speaker-title">Project Engineer</p>
+                    <p class="speaker-org">CDAC Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-2">
+                    <div class="speaker-avatar">VM</div>
+                    <h3 class="speaker-name">Dr. Vishnu</h3>
+                    <p class="speaker-title">Faculty Member</p>
+                    <p class="speaker-org">MIT Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-3">
+                    <div class="speaker-avatar">AB</div>
+                    <h3 class="speaker-name">Dr. Arup B.</h3>
+                    <p class="speaker-title">Faculty Member</p>
+                    <p class="speaker-org">MIT Bengaluru</p>
+                </div>
+
+                <div class="speaker-card fade-in stagger-4">
+                    <div class="speaker-avatar">SS</div>
+                    <h3 class="speaker-name">Mr. Saurabh</h3>
+                    <p class="speaker-title">Faculty Member</p>
+                    <p class="speaker-org">MIT Bengaluru</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="team">
+            <div class="section-header">
+                <div class="section-label">Leadership</div>
+                <h2 class="section-title">Organizing Team</h2>
+            </div>
+
+            <div class="team-section">
+                <div class="team-category">
+                    <h3>Patron</h3>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <h4>Dr. Iven Jose</h4>
+                            <p>Director, MIT Bengaluru</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-category">
+                    <h3>Convenor</h3>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <h4>Dr. Dayananda P.</h4>
+                            <p>Dean, School of Computer Engineering, MIT Bengaluru</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-category">
+                    <h3>Faculty Coordinators</h3>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <h4>Dr. Vishnu Yarlagadda</h4>
+                            <p>School of Computer Engineering, MIT Bengaluru</p>
+                        </div>
+                        <div class="team-member">
+                            <h4>Dr. Gauri Kalnoor</h4>
+                            <p>School of Computer Engineering, MIT Bengaluru</p>
+                        </div>
+                        <div class="team-member">
+                            <h4>Dr. Preethi</h4>
+                            <p>School of Computer Engineering, MIT Bengaluru</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="contact-section">
+                <div class="section-label">Get in Touch</div>
+                <h2 class="section-title">Contact Us</h2>
+                <p class="section-subtitle">For registration and inquiries, please reach out to us</p>
+
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <div class="contact-icon">✉️</div>
+                        <div class="contact-info">
+                            <h4>Email</h4>
+                            <p><a href="/cdn-cgi/l/email-protection#43352a302b2d366d2e3631372b3a032e222d2a33222f6d262736"><span class="__cf_email__" data-cfemail="04726d776c6a712a697176706c7d4469656a6d7465682a616071">[email&#160;protected]</span></a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div class="contact-info">
+                            <h4>Phone</h4>
+                            <p><a href="tel:+919848544449">+91 98485 44449</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">QUANTUM FDP 2026</div>
+            <p class="footer-text">
+                Organized by <strong>School of Computer Engineering</strong><br>
+                Manipal Institute of Technology Bengaluru<br>
+                A constituent unit of MAHE, Manipal
+            </p>
+            <p class="footer-text" style="margin-top: 2rem; font-size: 0.8rem;">
+                © 2026 MIT Bengaluru. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'tr
